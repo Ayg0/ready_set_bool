@@ -1,3 +1,4 @@
+module Adder where
 import Data.Word (Word32)
 import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))
 
