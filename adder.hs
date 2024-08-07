@@ -1,8 +1,7 @@
 import Data.Word (Word32)
-import Data.Bits (shiftR, shift, xor, testBit, (.&.), (.|.))
+import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))
 
 main:: IO()
-printBits :: Integer -> IO ()
 adder :: Word32 -> Word32 -> Word32
 halfAdder :: Bool -> Bool -> (Bool, Bool)
 fullAdder :: Bool -> Bool -> Bool -> (Bool, Bool)
@@ -26,16 +25,17 @@ fullAdderPos nbr1 nbr2 prevCarry pos =
  in
   fullAdder bit1 bit2 prevCarry
 
-adder nbr1 nbr2 = nbr1 + nbr2
+adder nbr1 nbr2 = aux nbr1 nbr2 0 0 False
+ where
+  aux nbr1 nbr2 pos res prevCarry
+   | pos == 32 = res
+   | otherwise = aux nbr1 nbr2 (pos + 1) currentRes currentCarry
+    where
+     (sum, currentCarry) = fullAdderPos nbr1 nbr2 prevCarry pos
+     sumWord32 = if sum == True then 1 `shiftL` pos else 0
+     currentRes = sumWord32 .|. res
 
-printBits number
- | number == 0 = putChar('\n')
- | otherwise = do
-  printBits(number `shiftR` 1)
-  putStr . show $ (number .&. 1)
-
-
-main = 
+main =
  do
-  print (fullAdderPos 5 5 True 1)
+  print (adder 507 507)
  
