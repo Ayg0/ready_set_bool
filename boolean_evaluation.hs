@@ -2,7 +2,7 @@ import Data.Word (Word32)
 import qualified Data.Map as Map
 import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))
 import Data.List (null, tail)
-
+import Data.Maybe (fromJust)
 
 main:: IO()
 boolean_evaluation :: [Char] -> Bool
@@ -11,49 +11,44 @@ evaluateExpresion :: [Bool] -> Char -> [Bool]
 safeRemoveLastTwo :: [Bool] -> [Bool]
 equivalenceFunc :: Bool -> Bool -> Bool
 conditionFunc :: Bool -> Bool -> Bool
+opMap :: [(Char, Bool -> Bool -> Bool)]
+getOperator :: Char -> Bool -> Bool -> Bool
 
-conditionFunc op1 op2 = equivalenceFunc op1 op2 .|. op2
-equivalenceFunc op1 op2 = not (xor op1 op2)
+opMap = [
+    ('&', (.&.)),
+    ('|', (.|.)),
+    ('^', xor),
+    ('>', conditionFunc),
+    ('=', equivalenceFunc)
+  ]
 
+-- safely remove last two elements from the list
 safeRemoveLastTwo xs
     | length xs <= 2 = []
     | otherwise      = take (length xs - 2) xs
 
+-- get the operator from the opMap
+getOperator op = (fromJust $ lookup op opMap)
+
+-- logic for `>`
+conditionFunc op1 op2 = equivalenceFunc op1 op2 .|. op2
+
+-- logic for `=`
+equivalenceFunc op1 op2 = not (xor op1 op2)
+
+-- `!` is a special operation that only takes one operand
 evaluateExpresion vals '!' = newVals
  where
   newVals = init vals ++ [not (last vals)]
 
-evaluateExpresion vals '&' = newVals
+-- Implementation of the rest of operations
+evaluateExpresion vals op = newVals
  where
   op1 = last vals
   op2 = last (init vals)
-  newVals = safeRemoveLastTwo vals ++ [(op1 .&. op2)]
+  newVals = safeRemoveLastTwo vals ++ [(getOperator op) op1 op2]
 
-evaluateExpresion vals '|' = newVals
- where
-  op1 = last vals
-  op2 = last (init vals)
-  newVals = safeRemoveLastTwo vals ++ [(op1 .|. op2)]
-
-evaluateExpresion vals '^' = newVals
- where
-  op1 = last vals
-  op2 = last (init vals)
-  newVals = safeRemoveLastTwo vals ++ [(op1 `xor` op2)]
-
-evaluateExpresion vals '>' = newVals
- where
-  op1 = last vals
-  op2 = last (init vals)
-  newVals = safeRemoveLastTwo vals ++ [(op1 `conditionFunc` op2)]
-
-evaluateExpresion vals '=' = newVals
- where
-  op1 = last vals
-  op2 = last (init vals)
-  newVals = safeRemoveLastTwo vals ++ [(op1 `equivalenceFunc` op2)]
-
-
+-- using list comprehension to filter the element into their respective lists
 parser proposition = (vals, ops)
  where
   vals = [if c == '1' then True else False | c <- proposition, c == '1' || c == '0']
