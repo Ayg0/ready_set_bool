@@ -4,29 +4,43 @@ import Data.List
 import qualified Data.Map as Map
 
 main:: IO()
+
 print_truth_table :: [Char] -> IO()
-printTableHead :: ([Char], [Char]) -> IO()
+printHead :: [Char] -> IO()
+printVals :: [Char] -> IO()
+printDashes :: [Char] -> IO()
+
 getVariables :: [Char] -> ([Char], [Char])
 factorial :: Int -> Int
 iteratPossibleVars :: [Char] -> ([Char], [Char]) -> Int -> Int -> IO()
 changeByEteration :: ([Char], [Char]) -> Int -> ([Char], [Char])
 
--- getVariables (used nub to filter duplicates)
+-- getVariables (used nub to filter duplicates):
 getVariables formula = (varsList, values)
  where
   varsList = nub [c | c <- formula, not (c `elem` "!&|^>=")]
   values =  ['0' | c <- varsList]
 
--- print the head of the table
-printTableHead (varsList, values)
- | null varsList = print "Why Are you doing this ??"
- | otherwise = aux varsList
-  where
-   aux (var:varsList)
-    | null varsList = putStrLn(" | " ++ [var] ++" | = |")
-    | otherwise = do
-     putStr ("| " ++ [var])
-     aux varsList
+-- display variables:
+printHead (var:varsList)
+ | null varsList = putStrLn("| " ++ [var] ++" | = |")
+ | otherwise = do
+  putStr ("| " ++ [var] ++ " ")
+  printHead varsList
+
+-- display Dashes to separate the table:
+printDashes (var:varsList)
+ | null varsList = putStrLn("---------")
+ | otherwise = do
+  putStr ("----")
+  printDashes varsList
+
+-- print the values of each celll:
+printVals (value:values)
+ | null values = putStrLn("| " ++ [value] ++" | K |")
+ | otherwise = do
+  putStr ("| " ++ [value] ++ " ")
+  printVals values
 
 -- Calculate the Factorial:
 factorial nbr = aux nbr 1
@@ -35,11 +49,17 @@ factorial nbr = aux nbr 1
   | nbr <= 1 = res
   | otherwise = aux (nbr - 1) (res * nbr)
 
--- -- Iterate through all possibilities:
+-- call with -1 to display the head of the table:
+iteratPossibleVars formula (varsList, values) maxIters (-1) = do 
+ printDashes varsList
+ printHead varsList
+ iteratPossibleVars formula (varsList, values) maxIters 0
+
+-- Iterate through all possibilities:
 iteratPossibleVars formula (varsList, values) maxIters iteration
- | iteration == maxIters = print "WoW"
+ | iteration == maxIters = printDashes varsList
  | otherwise = do
-  print(varsList, values)
+  printVals values
   iteratPossibleVars formula (changeByEteration (varsList, values) (iteration + 1)) maxIters (iteration + 1)
 
 -- change values on iteration
@@ -54,9 +74,10 @@ changeByEteration (varsList, values) iteration = aux (varsList, values) iteratio
        currentVal = values !! currentIndex
        reversedVal = if currentVal == '1' then '0' else '1'
 
-print_truth_table formula = iteratPossibleVars formula (varsList, values) maxIter 0
+
+print_truth_table formula = iteratPossibleVars formula (varsList, values) maxIter (-1)
  where 
   (varsList, values) = (getVariables formula)
   maxIter = factorial (length varsList)
 
-main = print_truth_table "ABC&C"
+main = print_truth_table "AB|C&"
