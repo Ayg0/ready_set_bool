@@ -17,6 +17,13 @@ changeByEteration :: ([Char], [Char]) -> Int -> ([Char], [Char])
 replaceWithVals :: [Char] -> ([Char], [Char]) -> [Char]
 boolToChar :: Bool -> Char
 getIndex :: [Char] -> Char -> Int
+calcPower :: Int -> Int -> Int
+
+calcPower base power = aux base power 1
+   where
+    aux base times res
+     | times == 0 = res
+     | otherwise = aux base (times - 1) (res * base)
 
 getIndex list elem = aux list elem (length list) 0
  where
@@ -76,7 +83,7 @@ changeByEteration (varsList, values) iteration = aux (varsList, values) iteratio
    | currentIndex == length varsList = (varsList, newValues)
    | otherwise = aux (varsList, values) iteration (newValues ++ [editedVal]) (currentIndex + 1)
     where
-     editedVal = if ((iteration `mod` (currentIndex + 1)) == 0) then reversedVal else currentVal
+     editedVal = if ((iteration `mod` (calcPower 2 currentIndex)) == 0) then reversedVal else currentVal
       where
        currentVal = values !! currentIndex
        reversedVal = if currentVal == '1' then '0' else '1'
@@ -85,6 +92,6 @@ changeByEteration (varsList, values) iteration = aux (varsList, values) iteratio
 print_truth_table formula = iteratPossibleVars formula (varsList, values) maxIter (-1)
  where 
   (varsList, values) = (getVariables formula)
-  maxIter = (length varsList) * (length varsList)
+  maxIter = calcPower 2 (length varsList)
 
-main = print_truth_table "AB|"
+main = print_truth_table "AB&C|"

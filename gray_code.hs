@@ -1,6 +1,7 @@
 import Data.Word (Word32)
 import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))
 
+
 main:: IO()
 gray_code :: Word32 -> Word32
 getXorResult :: Word32 -> Int -> Word32

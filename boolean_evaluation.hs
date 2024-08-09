@@ -1,5 +1,6 @@
 module BooleanEval where
 import Data.Word (Word32)
+import Debug.Trace (trace)
 import qualified Data.Map as Map
 import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))
 import Data.List (null, tail)
@@ -40,14 +41,12 @@ equivalenceFunc op1 op2 = not (xor op1 op2)
 -- `!` is a special operation that only takes one operand
 evaluateExpresion vals '!' = newVals
  where
-  newVals = init vals ++ [not (last vals)]
+  newVals = init vals ++ [not (head vals)]
 
 -- Implementation of the rest of operations
-evaluateExpresion vals op = newVals
+evaluateExpresion (op1:op2:vals) op = newVals
  where
-  op1 = last vals
-  op2 = last (init vals)
-  newVals = safeRemoveLastTwo vals ++ [(getOperator op) op1 op2]
+  newVals = [(getOperator op) op1 op2] ++ vals
 
 -- using list comprehension to filter the element into their respective lists
 parser proposition = (vals, ops)
@@ -64,8 +63,9 @@ boolean_evaluation proposition = aux (parser proposition)
      newVals = evaluateExpresion vals (head ops)
 
 main = do
- print(boolean_evaluation("10&"))
- print(boolean_evaluation("10|"))
- print(boolean_evaluation("11>"))
- print(boolean_evaluation("10="))
- print(boolean_evaluation("1011||="))
+ print(boolean_evaluation("10&")) -- False
+ print(boolean_evaluation("10|")) -- True
+ print(boolean_evaluation("11>")) -- True
+ print(boolean_evaluation("10=")) -- False
+ print(boolean_evaluation("1011||=")) -- True
+ print(boolean_evaluation("00&1|")) -- True

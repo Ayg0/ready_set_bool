@@ -1,25 +1,35 @@
 #!/bin/bash
 
-# # Check if a file name is provided
-# if [ $# -eq 0 ]; then
-#   echo "Usage: $0 <Haskell source file>"
-#   exit 1
-# fi
+# Check if a file name is provided
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <Haskell source file>"
+  exit 1
+fi
 
-# # Get the file name from the first argument
-# FILE=$1
+# Get the file name from the first argument
+FILE=$1
 
-# # Compile the Haskell code
-# ghc -no-keep-hi-files -no-keep-o-files "$FILE"
+# Compile the Haskell code
+ghc -no-keep-hi-files -no-keep-o-files "$FILE"
 
-# # Check if the compilation was successful
-# if [ $? -eq 0 ]; then
-#   # Extract the base name without extension for the executable
-#   BASE_NAME=$(basename "$FILE" .hs)
-#   # Run the compiled program
-#   ./"$BASE_NAME"
-# else
-#   echo "Compilation failed."
-# fi
+# Check if the compilation was successful
+if [ $? -eq 0 ]; then
+  # Extract the base name without extension for the executable
+  BASE_NAME=$(basename "$FILE" .hs)
+  # Run the compiled program
+  ./"$BASE_NAME"
+else
+  echo "Compilation failed."
+fi
 
-ghc -no-keep-hi-files -no-keep-o-files  truth_table.hs --make boolean_evaluation.hs; ./truth_table
+# ghc -no-keep-hi-files -no-keep-o-files  truth_table.hs --make boolean_evaluation.hs; ./truth_table
+
+
+# 000 000
+# 001 100
+# 010 010
+# 011 110
+# 100 001
+# 101 101
+# 110 011
+# 111 111
