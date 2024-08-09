@@ -1,3 +1,4 @@
+module BooleanEval where
 import Data.Word (Word32)
 import qualified Data.Map as Map
 import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))

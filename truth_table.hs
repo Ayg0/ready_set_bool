@@ -1,3 +1,4 @@
+import BooleanEval (boolean_evaluation) 
 import Data.Word (Word32)
 import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))
 import Data.List
@@ -7,14 +8,25 @@ main:: IO()
 
 print_truth_table :: [Char] -> IO()
 printHead :: [Char] -> IO()
-printVals :: [Char] -> IO()
+printVals :: [Char] -> [Char] -> IO()
 printDashes :: [Char] -> IO()
 
 getVariables :: [Char] -> ([Char], [Char])
-factorial :: Int -> Int
 iteratPossibleVars :: [Char] -> ([Char], [Char]) -> Int -> Int -> IO()
 changeByEteration :: ([Char], [Char]) -> Int -> ([Char], [Char])
+replaceWithVals :: [Char] -> ([Char], [Char]) -> [Char]
+boolToChar :: Bool -> Char
+getIndex :: [Char] -> Char -> Int
 
+getIndex list elem = aux list elem (length list) 0
+ where
+  aux list element listLength index
+   | index == listLength = -1
+   | otherwise = if elem == list !! index then index else aux list element listLength (index + 1)
+
+
+replaceWithVals formula (varsList, values) =
+ [if i /= -1 then values !! i else c | c <- formula, let i = getIndex varsList c]
 -- getVariables (used nub to filter duplicates):
 getVariables formula = (varsList, values)
  where
@@ -35,19 +47,14 @@ printDashes (var:varsList)
   putStr ("----")
   printDashes varsList
 
+boolToChar b = if b == True then '1' else '0'
+
 -- print the values of each celll:
-printVals (value:values)
- | null values = putStrLn("| " ++ [value] ++" | K |")
+printVals (value:values) proposition
+ | null values = putStrLn("| " ++ [value] ++" | " ++  [boolToChar (boolean_evaluation proposition)] ++" |")
  | otherwise = do
   putStr ("| " ++ [value] ++ " ")
-  printVals values
-
--- Calculate the Factorial:
-factorial nbr = aux nbr 1
- where
- aux nbr res
-  | nbr <= 1 = res
-  | otherwise = aux (nbr - 1) (res * nbr)
+  printVals values proposition
 
 -- call with -1 to display the head of the table:
 iteratPossibleVars formula (varsList, values) maxIters (-1) = do 
@@ -59,7 +66,7 @@ iteratPossibleVars formula (varsList, values) maxIters (-1) = do
 iteratPossibleVars formula (varsList, values) maxIters iteration
  | iteration == maxIters = printDashes varsList
  | otherwise = do
-  printVals values
+  printVals values (replaceWithVals formula (varsList, values))
   iteratPossibleVars formula (changeByEteration (varsList, values) (iteration + 1)) maxIters (iteration + 1)
 
 -- change values on iteration
@@ -78,6 +85,6 @@ changeByEteration (varsList, values) iteration = aux (varsList, values) iteratio
 print_truth_table formula = iteratPossibleVars formula (varsList, values) maxIter (-1)
  where 
   (varsList, values) = (getVariables formula)
-  maxIter = factorial (length varsList)
+  maxIter = (length varsList) * (length varsList)
 
-main = print_truth_table "AB|C&"
+main = print_truth_table "AB|"
