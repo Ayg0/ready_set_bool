@@ -4,6 +4,7 @@ import Data.Word (Word32)
 main:: IO()
 multiplier :: Word32 -> Word32 -> Word32
 
+----------------------------------------------------------------
 multiplier nbr1 nbr2 = aux nbr1 nbr2 0
  where
   aux nbr1 nbr2 res

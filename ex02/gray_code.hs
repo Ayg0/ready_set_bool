@@ -6,10 +6,12 @@ main:: IO()
 gray_code :: Word32 -> Word32
 getXorResult :: Word32 -> Int -> Word32
 
+----------------------------------------------------------------
 getXorResult nbr pos = (if xorRes then 1 else 0) `shiftL` pos
  where
   xorRes =  (testBit nbr pos) /= testBit nbr (pos + 1)
 
+----------------------------------------------------------------
 gray_code nbr = aux nbr 0 0
  where
   aux nbr pos res

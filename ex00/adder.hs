@@ -1,4 +1,3 @@
-module Adder where
 import Data.Word (Word32)
 import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))
 
@@ -8,17 +7,20 @@ halfAdder :: Bool -> Bool -> (Bool, Bool)
 fullAdder :: Bool -> Bool -> Bool -> (Bool, Bool)
 fullAdderPos :: Word32 -> Word32 -> Bool -> Int -> (Bool, Bool)
 
+----------------------------------------------------------------
 halfAdder bit1 bit2 = (sum, carry)
  where
   sum = bit1 `xor` bit2
   carry = bit1 .&. bit2
 
+----------------------------------------------------------------
 fullAdder bit1 bit2 prevCarry = (sum, nextCarry)
  where
   (halfAdderSum, halfAdderCarry) = halfAdder bit1 bit2
   sum = halfAdderSum `xor` prevCarry
   nextCarry = (halfAdderSum .&. prevCarry) .|. (bit1 .&. bit2)
 
+----------------------------------------------------------------
 fullAdderPos nbr1 nbr2 prevCarry pos = 
  let
   bit1 = testBit nbr1 pos
@@ -26,6 +28,7 @@ fullAdderPos nbr1 nbr2 prevCarry pos =
  in
   fullAdder bit1 bit2 prevCarry
 
+----------------------------------------------------------------
 adder nbr1 nbr2 = aux nbr1 nbr2 0 0 False
  where
   aux nbr1 nbr2 pos res prevCarry

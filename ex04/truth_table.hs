@@ -19,21 +19,24 @@ boolToChar :: Bool -> Char
 getIndex :: [Char] -> Char -> Int
 calcPower :: Int -> Int -> Int
 
+----------------------------------------------------------------
 calcPower base power = aux base power 1
    where
     aux base times res
      | times == 0 = res
      | otherwise = aux base (times - 1) (res * base)
 
+----------------------------------------------------------------
 getIndex list elem = aux list elem (length list) 0
  where
   aux list element listLength index
    | index == listLength = -1
    | otherwise = if elem == list !! index then index else aux list element listLength (index + 1)
 
-
+----------------------------------------------------------------
 replaceWithVals formula (varsList, values) =
  [if i /= -1 then values !! i else c | c <- formula, let i = getIndex varsList c]
+
 -- getVariables (used nub to filter duplicates):
 getVariables formula = (varsList, values)
  where
@@ -54,6 +57,7 @@ printDashes (var:varsList)
   putStr ("----")
   printDashes varsList
 
+----------------------------------------------------------------
 boolToChar b = if b == True then '1' else '0'
 
 -- print the values of each celll:
@@ -88,10 +92,10 @@ changeByEteration (varsList, values) iteration = aux (varsList, values) iteratio
        currentVal = values !! currentIndex
        reversedVal = if currentVal == '1' then '0' else '1'
 
-
+----------------------------------------------------------------
 print_truth_table formula = iteratPossibleVars formula (varsList, values) maxIter (-1)
  where 
   (varsList, values) = (getVariables formula)
   maxIter = calcPower 2 (length varsList)
 
-main = print_truth_table "AB&C|"
+main = print_truth_table "AB^C&"
