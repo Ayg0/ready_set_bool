@@ -1,10 +1,9 @@
+module TruthTable where
 import BooleanEval (boolean_evaluation) 
 import Data.Word (Word32)
 import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))
 import Data.List
 import qualified Data.Map as Map
-
-main:: IO()
 
 print_truth_table :: [Char] -> IO()
 printHead :: [Char] -> IO()
@@ -97,5 +96,3 @@ print_truth_table formula = iteratPossibleVars formula (varsList, values) maxIte
  where 
   (varsList, values) = (getVariables formula)
   maxIter = calcPower 2 (length varsList)
-
-main = print_truth_table "AB^C&"

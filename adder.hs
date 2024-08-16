@@ -1,7 +1,7 @@
+module Adder where
 import Data.Word (Word32)
 import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))
 
-main:: IO()
 adder :: Word32 -> Word32 -> Word32
 halfAdder :: Bool -> Bool -> (Bool, Bool)
 fullAdder :: Bool -> Bool -> Bool -> (Bool, Bool)
@@ -38,8 +38,3 @@ adder nbr1 nbr2 = aux nbr1 nbr2 0 0 False
      (sum, currentCarry) = fullAdderPos nbr1 nbr2 prevCarry pos
      sumWord32 = if sum == True then 1 `shiftL` pos else 0
      currentRes = sumWord32 .|. res
-
-main =
- do
-  print (adder 507 507)
- 

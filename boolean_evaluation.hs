@@ -1,3 +1,4 @@
+module BooleanEval where
 import Data.Word (Word32)
 import Debug.Trace (trace)
 import qualified Data.Map as Map
@@ -5,7 +6,6 @@ import Data.Bits (shiftL, xor, testBit, (.&.), (.|.))
 import Data.List (null, tail)
 import Data.Maybe (fromJust)
 
-main:: IO()
 boolean_evaluation :: [Char] -> Bool
 parser :: [Char] -> ([Bool], [Char])
 evaluateExpresion :: [Bool] -> Char -> [Bool]
@@ -61,10 +61,10 @@ boolean_evaluation proposition = aux (parser proposition)
     where
      newVals = evaluateExpresion vals (head ops)
 
-main = do
- print(boolean_evaluation("10&")) -- False
- print(boolean_evaluation("10|")) -- True
- print(boolean_evaluation("11>")) -- True
- print(boolean_evaluation("10=")) -- False
- print(boolean_evaluation("1011||=")) -- True
- print(boolean_evaluation("00&1|")) -- True
+-- main = do
+--  print(boolean_evaluation("10&")) -- False
+--  print(boolean_evaluation("10|")) -- True
+--  print(boolean_evaluation("11>")) -- True
+--  print(boolean_evaluation("10=")) -- False
+--  print(boolean_evaluation("1011||=")) -- True
+--  print(boolean_evaluation("00&1|")) -- True
