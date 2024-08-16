@@ -19,14 +19,3 @@ gray_code nbr = aux nbr 0 0
    | otherwise = aux nbr (pos + 1) accumulator
     where 
      accumulator = res .|. getXorResult nbr pos
-
--- main = do
---  print(gray_code 0) 
---  print(gray_code 1) 
---  print(gray_code 2) 
---  print(gray_code 3) 
---  print(gray_code 4) 
---  print(gray_code 5) 
---  print(gray_code 6) 
---  print(gray_code 7) 
---  print(gray_code 8) 

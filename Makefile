@@ -6,7 +6,7 @@ FLAGS = -no-keep-hi-files -no-keep-o-files
 
 all: $(NAME)
 
-$(NAME): $(SRC)
+$(NAME): $(SRC) $(MAIN)
 	$(CMP) $(FLAGS) $(MAIN) --make $(SRC) -o $(NAME)
 
 run: $(NAME)
